@@ -1,9 +1,24 @@
-import { Body, Controller, Get, Param, ParseBoolPipe, ParseIntPipe, Post, Query, Req, Res, UsePipes, ValidationPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseBoolPipe,
+  ParseIntPipe,
+  Post,
+  Query,
+  Req,
+  Res,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { Request, Response } from 'express';
 import { CreateUserDto } from './dto/createUser.dto';
+import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
+  constructor(private usersService: UsersService) {}
   /**
    * some examples for get api
    */
@@ -20,6 +35,14 @@ export class UsersController {
   @Get()
   getPostComments() {
     return [{ id: 1, title: 'post', comments: [{ id: 1, description: 'test' }] }];
+  }
+
+  /**
+   * call the users service
+   */
+  @Get('service')
+  getUsersFromService() {
+    return this.usersService.fetchUser();
   }
 
   /**
@@ -58,7 +81,7 @@ export class UsersController {
   }
 
   @Get(':id/:postId')
-  getUserPostById(@Param('id', ParseIntPipe ) id: number, @Param('postId', ParseIntPipe) postId: number) {
+  getUserPostById(@Param('id', ParseIntPipe) id: number, @Param('postId', ParseIntPipe) postId: number) {
     console.log(id, postId);
     return { id, postId };
   }
