@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseBoolPipe, ParseIntPipe, Post, Query, Req, Res, UsePipes, ValidationPipe } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { CreateUserDto } from './dto/createUser.dto';
 
@@ -24,6 +24,7 @@ export class UsersController {
 
   /**
    * example for post api
+   * add validation to get requests
    */
   @Post()
   createUsers(@Req() request: Request, @Res() response: Response) {
@@ -32,6 +33,7 @@ export class UsersController {
   }
 
   @Post('create')
+  @UsePipes(new ValidationPipe())
   createUser(@Body() userDto: CreateUserDto) {
     console.log(userDto);
     return {};
@@ -40,6 +42,7 @@ export class UsersController {
   /**
    * params examples
    * nested params examples
+   * add validation to get requests
    */
   @Get(':id')
   getUserById(@Req() request: Request, @Res() response: Response) {
@@ -48,15 +51,31 @@ export class UsersController {
     response.json({ id });
   }
 
-  @Get(':id')
-  getUsersById(@Param('id') id: string) {
+  @Get('profile/:id')
+  getUsersById(@Param('id', ParseIntPipe) id: number) {
     console.log(id);
     return { id };
   }
 
   @Get(':id/:postId')
-  getUserPostById(@Param('id') id: string, @Param('postId') postId: string) {
+  getUserPostById(@Param('id', ParseIntPipe ) id: number, @Param('postId', ParseIntPipe) postId: number) {
     console.log(id, postId);
     return { id, postId };
+  }
+
+  /**
+   * query examples
+   * nested params examples
+   */
+  @Get('query')
+  getUserByQuery(@Query('sortBy') sortBy: string) {
+    console.log(sortBy);
+    return [{ id: 1, user: 'test' }];
+  }
+
+  @Get('validate')
+  getUserByQueryWithValidation(@Query('sortDesc', ParseBoolPipe) sortDesc: boolean) {
+    console.log(sortDesc);
+    return [{ id: 1, user: 'test' }];
   }
 }
