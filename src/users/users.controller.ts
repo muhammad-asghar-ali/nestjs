@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   ParseBoolPipe,
   ParseIntPipe,
@@ -43,6 +45,22 @@ export class UsersController {
   @Get('service')
   getUsersFromService() {
     return this.usersService.fetchUser();
+  }
+
+  @Post('service')
+  @UsePipes(new ValidationPipe())
+  createUserFromService(@Body() userDto: CreateUserDto) {
+    console.log(userDto);
+    return this.usersService.createUser(userDto)
+  }
+
+  @Get('service/:id')
+  getUsersByIdFromService(@Param('id', ParseIntPipe) id: number) {
+    console.log(id);
+    const user = this.usersService.getUserById(id);
+    if(!user) throw new HttpException('user not found', HttpStatus.BAD_REQUEST);
+
+    return user;
   }
 
   /**
