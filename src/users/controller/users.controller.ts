@@ -51,7 +51,7 @@ export class UsersController {
     return this.usersService.fetchUser();
   }
 
-  // use pipe
+  // use custome create pipe
   @Post('service')
   @UsePipes(new ValidationPipe())
   createUserFromService(@Body(UsersClassPipe) userDto: CreateUserDto) {
