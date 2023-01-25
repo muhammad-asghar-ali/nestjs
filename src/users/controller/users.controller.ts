@@ -11,15 +11,18 @@ import {
   Query,
   Req,
   Res,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { CreateUserDto } from './dto/createUser.dto';
-import { UsersClassPipe } from './dto/pipes/users.pipe';
-import { UsersService } from './users.service';
+import { CreateUserDto } from '../dto/createUser.dto';
+import { AuthGuard } from '../guards/auth.guard';
+import { UsersClassPipe } from '../pipes/users.pipe';
+import { UsersService } from '../service/users.service';
 
 @Controller('users')
+@UseGuards(AuthGuard)
 export class UsersController {
   constructor(private usersService: UsersService) {}
   /**
